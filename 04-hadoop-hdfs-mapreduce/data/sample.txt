@@ -1,0 +1,30 @@
+Hadoop is an open source distributed computing framework.
+Hadoop was created by Doug Cutting and Mike Cafarella in 2006.
+The Hadoop Distributed File System stores data across many machines.
+HDFS splits files into blocks and distributes those blocks across the cluster.
+Each block in HDFS is typically 128 megabytes in size.
+The NameNode manages the metadata for the distributed file system.
+The DataNode stores the actual data blocks on local disk.
+Replication ensures that data is not lost when a machine fails.
+The default replication factor in Hadoop is three.
+MapReduce is the programming model for distributed data processing.
+A MapReduce job consists of two main phases: map and reduce.
+The map phase processes each input record and emits key-value pairs.
+The shuffle phase transfers the map output to the reducers.
+The sort phase groups all values with the same key together.
+The reduce phase aggregates values for each key.
+Word count is the classic example of a MapReduce program.
+Word count counts how many times each word appears in a document.
+The mapper emits each word with a count of one.
+The reducer sums all the counts for each word.
+Hadoop enabled companies to process petabytes of data.
+Yahoo used Hadoop to build its web search index.
+Facebook used Hadoop to analyze user activity logs.
+LinkedIn used Hadoop to build its data infrastructure.
+Spark later replaced MapReduce as the main processing engine.
+Spark processes data in memory instead of writing to disk.
+Cloud object storage like Amazon S3 replaced HDFS in many use cases.
+Modern data platforms use object storage with compute separated.
+The big data ecosystem continues to evolve with new tools.
+Apache Arrow provides a standard in-memory columnar format.
+Apache Parquet is the standard file format for big data analytics.

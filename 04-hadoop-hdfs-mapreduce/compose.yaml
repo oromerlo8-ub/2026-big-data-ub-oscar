@@ -1,0 +1,57 @@
+services:
+  namenode:
+    image: apache/hadoop:3.4
+    hostname: namenode
+    container_name: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - "9870:9870"
+    env_file:
+      - config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    volumes:
+      - namenode-data:/tmp/hadoop-root
+      - ./data:/data
+      - ./mapreduce:/mapreduce
+
+  datanode:
+    image: apache/hadoop:3.4
+    hostname: datanode
+    container_name: datanode
+    command: ["hdfs", "datanode"]
+    env_file:
+      - config
+    depends_on:
+      - namenode
+    volumes:
+      - datanode-data:/tmp/hadoop-root
+
+  resourcemanager:
+    image: apache/hadoop:3.4
+    hostname: resourcemanager
+    container_name: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - "8088:8088"
+    env_file:
+      - config
+    depends_on:
+      - namenode
+
+  nodemanager:
+    image: apache/hadoop:3.4
+    hostname: nodemanager
+    container_name: nodemanager
+    command: ["yarn", "nodemanager"]
+    env_file:
+      - config
+    depends_on:
+      - resourcemanager
+    volumes:
+      - ./data:/data
+      - ./mapreduce:/mapreduce
+
+volumes:
+  namenode-data:
+  datanode-data:
