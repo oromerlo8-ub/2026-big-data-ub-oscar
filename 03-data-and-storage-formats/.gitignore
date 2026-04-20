@@ -2,7 +2,4 @@ data/*.csv
 data/*.json
 data/*.parquet
 data/orders_partitioned/
-notebooks/*.csv
-notebooks/*.parquet
-notebooks/*.json
-notebooks/taxi_partitioned_month/
+notebooks/ignore/*
