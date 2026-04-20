@@ -1,0 +1,31 @@
+services:
+  jupyter:
+    build: .
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./data:/app/data
+      - ./notebooks:/app/notebooks
+      - ./dags:/opt/airflow/dags
+    environment:
+      - SPARK_DRIVER_MEMORY=4g
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --notebook-dir=/app
+
+  airflow:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./dags:/opt/airflow/dags
+    environment:
+      - AIRFLOW_HOME=/opt/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL=10
+    command: airflow standalone

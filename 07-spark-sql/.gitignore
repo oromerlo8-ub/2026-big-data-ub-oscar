@@ -1,0 +1,6 @@
+data/*.txt
+data/*.csv
+data/*.parquet
+data/output/
+notebooks/Untitled*.ipynb
+notebooks/.ipynb_checkpoints/

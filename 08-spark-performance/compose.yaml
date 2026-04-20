@@ -1,0 +1,16 @@
+services:
+  jupyter:
+    build: .
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - ./data:/app/data
+      - ./notebooks:/app/notebooks
+    environment:
+      - SPARK_DRIVER_MEMORY=4g
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
