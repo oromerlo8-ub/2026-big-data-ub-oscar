@@ -1,0 +1,49 @@
+services:
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: kafka
+    ports:
+      - "9092:9092"     # external listener (host -> kafka)
+    environment:
+      # KRaft single-node: this container is both broker and controller.
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+
+      # Two listeners:
+      #   PLAINTEXT      -> reachable as kafka:9094 from inside the Docker network
+      #   PLAINTEXT_HOST -> reachable as localhost:9092 from the host machine
+      #   CONTROLLER     -> internal KRaft controller traffic
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9094,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+
+      # Single-node defaults (don't run this in production)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
+  jupyter:
+    build: .
+    container_name: jupyter
+    depends_on:
+      - kafka
+    ports:
+      - "8888:8888"     # Jupyter
+      - "4040:4040"     # Spark UI (when a SparkSession is active)
+    volumes:
+      - ./data:/app/data
+      - ./notebooks:/app/notebooks
+    environment:
+      - SPARK_DRIVER_MEMORY=4g
+      - KAFKA_BOOTSTRAP=kafka:9094     # used by generate_clicks.py and notebooks
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --notebook-dir=/app
