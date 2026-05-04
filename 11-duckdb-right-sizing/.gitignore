@@ -1,0 +1,6 @@
+data/*.parquet
+data/*.csv
+data/*.duckdb
+data/output/
+notebooks/Untitled*.ipynb
+notebooks/.ipynb_checkpoints/
